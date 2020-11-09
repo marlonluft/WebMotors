@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Teste Web Motors</title>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js" integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.tpls.min.js" integrity="sha512-/XdLB8M7O3Ytl0jrzdLO93vYg1vvCJlACHwdXm2b542vjX12OncvRe5QMEXJv4N6je0yWOvWTVlDyczp5YFJOg==" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.bundle.min.js" integrity="sha512-iceXjjbmB2rwoX93Ka6HAHP+B76IY1z0o3h+N1PeDtRSsyeetU3/0QKJqGyPJcX63zysNehggFwMC/bi7dvMig==" crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/angular-toastr/2.1.1/angular-toastr.min.css" integrity="sha512-qx6VN+/Hr2aH12rxk9dxHQx48fzZgJbcdCm8Ig0dXh48AHoFUs2ldKfBA5gqhfPqvFtCaeaawUoF51qb00oAfg==" crossorigin="anonymous" />
+
+    <script src="js/angularApp.js"></script>
+    <script src="js/controller/anuncioController.js"></script>
+
+    <style type="text/css">
+        [ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+            display: none !important;
+        }
+    </style>
+</head>
+<body ng-app="webMotorsApp" class="container-fluid">
+
+    <h3>Teste Web Motors</h3>
+
+    <div class="container" ng-controller="anuncioController">
+
+        <div ng-if="Dados.Tela == 0" ng-cloak>
+            <div class="row">
+                <button type="button" class="btn btn-sm btn-primary" ng-click="Incluir()">Incluir novo</button>
+            </div>
+
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Marca</th>
+                        <th>Modelo</th>
+                        <th>Versão</th>
+                        <th>Ano</th>
+                        <th>Quilometragem</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody ng-if="Dados.ListaAnuncios.length > 0">
+                    <tr ng-repeat="anuncio in Dados.ListaAnuncios">
+                        <td ng-bind="anuncio.marca"></td>
+                        <td ng-bind="anuncio.modelo"></td>
+                        <td ng-bind="anuncio.versao"></td>
+                        <td ng-bind="anuncio.ano"></td>
+                        <td ng-bind="anuncio.quilometragem"></td>
+                        <td>
+                            <button type="button" class="btn btn-sm btn-primary" ng-click="Editar(anuncio)">Editar</button>
+                            <button type="button" class="btn btn-sm btn-danger" ng-click="Remover(anuncio)">Remover</button>
+                        </td>
+                    </tr>
+                </tbody>
+                <tfoot ng-if="Dados.ListaAnuncios.length == 0">
+                    <tr class="text-center">
+                        <td colspan="6">Nenhum anúncio cadastrado</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div ng-if="Dados.Tela == 1" ng-cloak>
+
+            <form>
+                <div class="form-group">
+                    <label>Marca</label>
+                    <select class="form-control" ng-model="Dados.Edicao.marca" ng-change="ConsultarModelos(Dados.Edicao.marca, null)">
+                        <option ng-value="">Selecione</option>
+                        <option ng-repeat="marca in Dados.Marcas" ng-value="marca.Name" ng-bind="marca.Name"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Modelo</label>
+                    <select class="form-control" ng-model="Dados.Edicao.modelo" ng-change="ConsultarVersao(Dados.Edicao.modelo, null)">
+                        <option ng-value="">Selecione</option>
+                        <option ng-repeat="modelo in Dados.Modelos" ng-value="modelo.Name" ng-bind="modelo.Name"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Versão</label>
+                    <select class="form-control" ng-model="Dados.Edicao.versao">
+                        <option ng-value="">Selecione</option>
+                        <option ng-repeat="versao in Dados.Versoes" ng-value="versao.Name" ng-bind="versao.Name"></option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Ano</label>
+                    <input type="number" min="1886" class="form-control" ng-model="Dados.Edicao.ano">
+                </div>
+                <div class="form-group">
+                    <label>Quilometragem</label>
+                    <input type="number" min="0" class="form-control" ng-model="Dados.Edicao.quilometragem">
+                </div>
+                <div class="form-group">
+                    <label>Observação</label>
+                    <textarea class="form-control" rows="3" ng-model="Dados.Edicao.observacao"></textarea>
+                </div>
+                <button type="button" class="btn btn-primary" ng-click="Gravar(Dados.Edicao)">Gravar</button>
+                <button type="button" class="btn btn-primary" ng-click="MostrarConsulta()">Voltar</button>
+            </form>
+
+        </div>
+
+    </div>
+
+</body>
+</html>
